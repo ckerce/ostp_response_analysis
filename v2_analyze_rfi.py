@@ -212,7 +212,10 @@ def analyze_with_ollama(ollama_client, model_name, text_content, filename, struc
     if structure["has_clear_sections"] and structure["sections"]:
         structure_info = "The document has the following structure:\n\n"
         for section in structure["sections"]:
-            structure_info += f"- Section {section['section_id']}: {section['section_name']} - {section['section_description']}\n"
+            section_id = section.get('section_id', 'N/A') # Get section_id or use 'N/A'
+            section_name = section.get('section_name', 'Unnamed Section') # Get section_name or use a default
+            section_desc = section.get('section_description', 'No description') # Get description or use a default
+            structure_info += f"- Section {section_id}: {section_name} - {section_desc}\n"
     else:
         structure_info = "The document does not have a clear section structure."
     
@@ -239,23 +242,47 @@ When listing concerns and recommendations, indicate which section they come from
 **Key Concerns:**
 """
 
+   
     # Add section-specific format for concerns if document has clear sections
     if structure["has_clear_sections"] and structure["sections"]:
         for section in structure["sections"]:
-            prompt += f"* [Section {section['section_id']}: {section['section_name']}] [List main concerns from this section. If none, write \"None stated for this section.\"]\n"
+            section_id = section.get('section_id', 'N/A')
+            section_name = section.get('section_name', 'Unnamed Section')
+            prompt += f"* [Section {section_id}: {section_name}] [List main concerns from this section. If none, write \"None stated for this section.\"]\n"
     else:
         prompt += "* [List the main concerns, barriers, or risks related to AI mentioned in the text. Use a new bullet for each distinct concern. Write \"None Stated\" if applicable.]\n"
-
+    
     prompt += "**Policy Recommendations:**\n"
-
+    
     # Add section-specific format for recommendations if document has clear sections
     if structure["has_clear_sections"] and structure["sections"]:
         for section in structure["sections"]:
-            prompt += f"* [Section {section['section_id']}: {section['section_name']}] [List main recommendations from this section. If none, write \"None stated for this section.\"]\n"
+            section_id = section.get('section_id', 'N/A')
+            section_name = section.get('section_name', 'Unnamed Section')
+            prompt += f"* [Section {section_id}: {section_name}] [List main recommendations from this section. If none, write \"None stated for this section.\"]\n"
     else:
         prompt += "* [List the main policy recommendations, suggestions, or actions proposed in the text. Use a new bullet for each distinct recommendation. Write \"None Stated\" if applicable.]\n"
-
+    
     prompt += "\nBegin your response now with '**Submitter Name:**'."
+
+
+    ## Add section-specific format for concerns if document has clear sections
+    #if structure["has_clear_sections"] and structure["sections"]:
+    #    for section in structure["sections"]:
+    #        prompt += f"* [Section {section['section_id']}: {section['section_name']}] [List main concerns from this section. If none, write \"None stated for this section.\"]\n"
+    #else:
+    #    prompt += "* [List the main concerns, barriers, or risks related to AI mentioned in the text. Use a new bullet for each distinct concern. Write \"None Stated\" if applicable.]\n"
+
+    #prompt += "**Policy Recommendations:**\n"
+
+    ## Add section-specific format for recommendations if document has clear sections
+    #if structure["has_clear_sections"] and structure["sections"]:
+    #    for section in structure["sections"]:
+    #        prompt += f"* [Section {section['section_id']}: {section['section_name']}] [List main recommendations from this section. If none, write \"None stated for this section.\"]\n"
+    #else:
+    #    prompt += "* [List the main policy recommendations, suggestions, or actions proposed in the text. Use a new bullet for each distinct recommendation. Write \"None Stated\" if applicable.]\n"
+
+    #prompt += "\nBegin your response now with '**Submitter Name:**'."
 
     try:
         print(f" [Info]  Sending analysis request to Ollama ({model_name})...", file=sys.stderr)
