@@ -24,7 +24,7 @@ MAX_TEXT_LENGTH = 80000 # Character limit for text sent to LLM
 # This is less critical if handler manages rates precisely,
 # but can be kept as a minimum overall processing time per doc if desired for other pacing.
 DEFAULT_TARGET_DOCUMENT_CYCLE_SECONDS = 5 # User updated
-DEFAULT_SECTIONS_LOG_FILE = "identified_sections.log" # From previous canvas version
+DEFAULT_SECTIONS_LOG_FILE = "gemini-out/identified_sections.log" # From previous canvas version
 
 # --- Logging Setup ---
 # Configure logging once at the application level
@@ -33,7 +33,7 @@ logging.basicConfig(
     level=logging.INFO, # Default level for all loggers, can be overridden by CLI arg or for specific modules
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler("rfi_analyzer_app.log", mode='a'), # Application log for this script's execution
+        logging.FileHandler("gemini-out/rfi_analyzer_app.log", mode='a'), # Application log for this script's execution
         logging.StreamHandler(sys.stderr) # Also print INFO and above to stderr
     ]
 )
